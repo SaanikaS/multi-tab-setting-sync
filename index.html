@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preferences</title>
+
+    <!--
+      Runs synchronously before the first paint, so a newly opened tab already
+      has the saved theme, font size and language. This avoids a flash of the
+      wrong theme. The storage key must match STORAGE_KEY in src/settings/types.ts.
+    -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        try {
+          var saved = JSON.parse(localStorage.getItem("prefs-sync:v1") || "{}");
+          if (saved.theme && saved.theme.value === "dark") {
+            root.dataset.theme = "dark";
+          }
+          if (saved.fontSize && typeof saved.fontSize.value === "number") {
+            root.style.setProperty("--base-font-size", saved.fontSize.value + "px");
+          }
+          if (saved.language && typeof saved.language.value === "string") {
+            root.lang = saved.language.value;
+          }
+        } catch (e) {
+          // First visit, or storage is blocked: keep the defaults.
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
