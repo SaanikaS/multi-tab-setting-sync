@@ -28,7 +28,7 @@ export function isValid(key: PreferenceKey, value: unknown): boolean {
 /** A replica where every preference holds its default, stamped at clock 0. */
 export function createReplica(writer: string): Replica {
   const entries = KEYS.map((key) => [key, { value: DEFAULT_PREFERENCES[key], clock: 0, writer }]);
-  return Object.fromEntries(entries) as Replica;
+  return Object.fromEntries(entries) as unknown as Replica;
 }
 
 /**
@@ -68,12 +68,12 @@ export function applyLocalChange<K extends PreferenceKey>(
   writer: string,
 ): Replica {
   const highest = Math.max(...KEYS.map((k) => replica[k].clock));
-  return { ...replica, [key]: { value, clock: highest + 1, writer } } as Replica;
+    return { ...replica, [key]: { value, clock: highest + 1, writer } } as unknown as Replica;
 }
 
 /** Extracts plain preference values from a replica. */
 export function toPreferences(replica: Replica): Preferences {
-  return Object.fromEntries(KEYS.map((k) => [k, replica[k].value])) as Preferences;
+    return Object.fromEntries(KEYS.map((k) => [k, replica[k].value])) as unknown as Preferences;
 }
 
 /**
